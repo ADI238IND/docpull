@@ -475,6 +475,13 @@ async def get_sites_config_endpoint():
     }
 
 
+@web_app.post("/sites/reset")
+async def reset_sites():
+    file_sites = load_sites_from_file()
+    sites_dict["_all_sites"] = file_sites
+    return {"success": True, "count": len(file_sites), "sites": list(file_sites.keys()), "message": f"Reset to {len(file_sites)} sites from sites.json"}
+
+
 @web_app.post("/sites/{site_id}")
 async def add_site(site_id: str, config: SiteConfig):
     current = sites_dict.get("_all_sites")
@@ -495,13 +502,6 @@ async def delete_site(site_id: str):
     del current[site_id]
     sites_dict["_all_sites"] = current
     return {"success": True, "site_id": site_id, "message": f"Site '{site_id}' deleted successfully"}
-
-
-@web_app.post("/sites/reset")
-async def reset_sites():
-    file_sites = load_sites_from_file()
-    sites_dict["_all_sites"] = file_sites
-    return {"success": True, "count": len(file_sites), "sites": list(file_sites.keys()), "message": f"Reset to {len(file_sites)} sites from sites.json"}
 
 
 # --- Discover ------------------------------------------------------
